@@ -1,27 +1,42 @@
 # AngularNginx
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.0.
+This is a project for a video tutorial explaining how to install and configure Nginx and deploy an Angular application on the server.
 
-## Development server
+## Video Link
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Nginx install and configure steps
 
-## Code scaffolding
+Assuming that you're connected to your server with Ubuntu, for instance, via ssh, you can follow these steps to isntall and configure Nginx:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Execute **sudo apt update**: updates local package list index
+- Execute **sudo apt install nginx**: install nginx
+- Execute **sudo ufw allow 'Nginx HTTP'**: Opens only port 80 in the server, other options are **Nginx Full** for both 80 and 443 and **Nginx HTTPS** for 443 only
+- Execute **systemctl status nginx**: checks the status of Nginx service
 
-## Build
+## Uploading files/directory (recursive) to your server
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- scp -P1234 -r /local-path user@ip:/server-path/
 
-## Running unit tests
+## Avoiding angular 404 error at refresh in routes
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Edit the **/etc/nginx/sites-available/default** file and add/edit this block:
 
-## Running end-to-end tests
+- If your app is in root folder **/var/www/html**:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+    location / {
+            # First attempt to serve request as file, then
+            # as directory, then fall back to displaying a 404.
+            try_files $uri $uri/ =404 index.html;
+    }
+```
 
-## Further help
+- If your app files are located in a sub-folder, for example, **/var/www/html/angular-app**:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+    location /angular-app {
+            alias /var/www/html/angular-app;
+            try_files $uri $uri/ /index.html index.html;
+            index  index.html;
+    }
+```
