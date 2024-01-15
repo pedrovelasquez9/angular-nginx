@@ -27,7 +27,7 @@ Edit the **/etc/nginx/sites-available/default** file and add/edit this block:
     location / {
             # First attempt to serve request as file, then
             # as directory, then fall back to displaying a 404.
-            try_files $uri $uri/ =404 index.html;
+            try_files $uri $uri/ /index.html index.html =404 index.html;
     }
 ```
 
@@ -37,6 +37,5 @@ Edit the **/etc/nginx/sites-available/default** file and add/edit this block:
     location /angular-app {
             alias /var/www/html/angular-app;
             try_files $uri $uri/ /index.html index.html;
-            index  index.html;
     }
 ```
